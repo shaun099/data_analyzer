@@ -117,7 +117,7 @@ Return STRICT JSON only in this format:
     try {
       parsed = JSON.parse(cleaned);
     } catch (e) {
-      console.error("Invalid JSON from Groq:", cleaned);
+      console.error(e,"Invalid JSON from Groq:", cleaned);
       return NextResponse.json({ bullets: [] });
     }
 

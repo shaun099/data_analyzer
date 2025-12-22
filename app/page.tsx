@@ -16,6 +16,11 @@ type Stats = {
   avg_payment_days: number | null;
 };
 
+type KPICardProps = {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+};
 export default function BillingDashboard() {
   const db = useDuckDB();
   const [loading, setLoading] = useState(false);
@@ -228,7 +233,7 @@ export default function BillingDashboard() {
   );
 }
 
-function KPICard({ title, value, icon }: any) {
+function KPICard({ title, value, icon }: KPICardProps) {
   return (
     <div className="bg-white p-6 rounded-xl border shadow-sm">
       <div className="w-10 h-10 mb-3 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg">
