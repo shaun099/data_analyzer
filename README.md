@@ -1,36 +1,177 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clinic Performance Dashboard (Billing Analyzer)
+
+A Next.js application for analyzing medical billing CSV data locally using DuckDB WebAssembly. The app calculates key performance indicators (KPIs) and provides AI-powered interpretations using the Groq API.
+
+## Features
+
+- **Client-Side CSV Processing**: Process large medical billing datasets directly in the browser using DuckDB-WASM — no server upload required
+- **Real-Time KPI Calculations**: Automatically computes essential revenue cycle metrics
+- **AI-Powered Insights**: Leverages Groq's LLaMA 3.3 70B model to interpret KPI results
+- **Privacy-First**: All data processing happens locally in your browser
+
+## Project Structure
+
+```
+my-billing-analyzer/
+├── app/
+│   ├── globals.css          # Global Tailwind CSS styles
+│   ├── layout.tsx           # Root layout component
+│   ├── page.tsx             # Main dashboard page
+│   └── api/
+│       └── kpis/
+│           └── interpret/
+│               └── route.ts # Groq API endpoint for KPI interpretation
+├── hooks/
+│   └── useDuckDB.ts         # Custom hook for DuckDB-WASM initialization
+├── public/                  # Static assets
+├── eslint.config.mjs        # ESLint configuration
+├── next.config.ts           # Next.js configuration
+├── package.json             # Dependencies and scripts
+├── postcss.config.mjs       # PostCSS configuration
+├── tailwind.config.ts       # Tailwind CSS configuration
+└── tsconfig.json            # TypeScript configuration
+```
+
+## Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| [Next.js 16](https://nextjs.org/) | React framework with App Router |
+| [React 19](https://react.dev/) | UI library |
+| [TypeScript](https://www.typescriptlang.org/) | Type-safe JavaScript |
+| [DuckDB-WASM](https://duckdb.org/docs/api/wasm/overview) | In-browser SQL analytics engine |
+| [Tailwind CSS 4](https://tailwindcss.com/) | Utility-first CSS framework |
+| [Lucide React](https://lucide.dev/) | Icon library |
+| [Groq API](https://groq.com/) | AI inference for KPI interpretation |
+
+## KPIs Calculated
+
+| Metric | Description |
+|--------|-------------|
+| **Total Claims** | Count of all billing records |
+| **Total Billed** | Sum of all invoice amounts |
+| **Total Paid** | Sum of all payments received |
+| **Collection Rate** | Percentage of billed amount collected |
+| **Revenue per Claim** | Average payment per claim |
+| **Patient Responsibility %** | Percentage from copays, deductibles, coinsurance |
+| **Insurance Collection %** | Percentage collected from insurance |
+| **Avg Payment Days** | Average days between DOS and payment posting |
+
+## Expected CSV Format
+
+Your CSV file should contain the following columns:
+
+| Column | Description |
+|--------|-------------|
+| `InvoiceAmount` | Billed amount for the claim |
+| `Paid` | Amount paid |
+| `PTCopay` | Patient copay amount |
+| `deduct` | Deductible amount |
+| `coins` | Coinsurance amount |
+| `DOS` | Date of Service |
+| `PostedDt` | Payment posted date |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/shaun099/data_analyzer.git
+   cd my-billing-analyzer
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   # Create a .env.local file
+   echo "GROQ_API_KEY=your_groq_api_key_here" > .env.local
+   ```
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GROQ_API_KEY` | Yes | API key for Groq AI interpretation service |
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+
+## How It Works
+
+1. **Upload**: User uploads a medical billing CSV file
+2. **Process**: DuckDB-WASM parses and analyzes the CSV entirely in the browser
+3. **Calculate**: SQL queries compute all KPIs from the billing data
+4. **Interpret**: Normalized KPIs are sent to the Groq API for AI-powered interpretation
+5. **Display**: Dashboard shows KPI cards and AI-generated insights
+
+## API Endpoints
+
+### POST `/api/kpis/interpret`
+
+Sends normalized KPIs to Groq for interpretation.
+
+**Request Body:**
+```json
+{
+  "kpis": {
+    "totalClaims": 1000,
+    "totalBilled": 150000,
+    "totalPaid": 120000,
+    "collectionRate": 80,
+    "revenuePerClaim": 120,
+    "patientResponsibilityPct": 15,
+    "insuranceCollectionPct": 65,
+    "avgPaymentDays": 30
+  }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Response:**
+```json
+{
+  "bullets": [
+    "The clinic processed 1,000 claims indicating...",
+    "..."
+  ]
+}
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Deploy easily on [Vercel](https://vercel.com/):
 
-## Learn More
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Add `GROQ_API_KEY` to environment variables
+4. Deploy
 
-To learn more about Next.js, take a look at the following resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is private and not licensed for public distribution.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is a private project. For internal contributions, please follow standard Git workflow practices.
