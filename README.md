@@ -12,7 +12,7 @@ A Next.js application for analyzing medical billing CSV data locally using DuckD
 ## Project Structure
 
 ```
-my-billing-analyzer/
+data-analyzer/
 ├── app/
 │   ├── globals.css          # Global Tailwind CSS styles
 │   ├── layout.tsx           # Root layout component
@@ -159,14 +159,7 @@ Sends normalized KPIs to Groq for interpretation.
 }
 ```
 
-## Deployment
 
-Deploy easily on [Vercel](https://vercel.com/):
-
-1. Push your code to GitHub
-2. Import the project in Vercel
-3. Add `GROQ_API_KEY` to environment variables
-4. Deploy
 
 ## License
 
